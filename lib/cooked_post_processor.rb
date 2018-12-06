@@ -250,15 +250,19 @@ class CookedPostProcessor
 
     absolute_url = url
     absolute_url = Discourse.base_url_no_prefix + absolute_url if absolute_url =~ /^\/[^\/]/
-
+    Rails.logger.info "VSOFT:1 Can't reach '#{absolute_url}' to get its dimension."
     return unless absolute_url
 
     # FastImage fails when there's no scheme
     absolute_url = SiteSetting.scheme + ":" + absolute_url if absolute_url.start_with?("//")
+    Rails.logger.info "VSOFT:2 Can't reach '#{absolute_url}' to get its dimension."
+
     return unless is_valid_image_url?(absolute_url)
+    Rails.logger.info "VSOFT:3 Can't reach '#{absolute_url}' to get its dimension."
 
     # we can *always* crawl our own images
     return unless SiteSetting.crawl_images? || Discourse.store.has_been_uploaded?(url)
+    Rails.logger.info "VSOFT:4 Can't reach '#{absolute_url}' to get its dimension."
 
     @size_cache[url] = FastImage.size(absolute_url)
   rescue Zlib::BufError, URI::Error, OpenSSL::SSL::SSLError
